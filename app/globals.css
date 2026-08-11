@@ -1,0 +1,399 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — the single source of truth for the look & feel.
+   Light + glassy: frosted white surfaces floating over the live camera.
+--------------------------------------------------------------------------- */
+:root {
+  --text: #171717;
+  --text-muted: rgba(23, 23, 23, 0.55);
+
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-blur: 20px;
+
+  --accent: #0a84ff;
+  --accent-contrast: #ffffff;
+
+  --radius-sm: 14px;
+  --radius: 22px;
+  --radius-lg: 30px;
+
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.14);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.12);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html,
+body {
+  margin: 0;
+  background: #000;
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Reusable surfaces
+--------------------------------------------------------------------------- */
+@layer components {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+  }
+
+  .glass-strong {
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+  }
+
+  /* Mode chip: glass by default, accent when active/tapped. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 550;
+    color: var(--text);
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm);
+    transition:
+      transform 0.15s var(--ease),
+      background 0.2s var(--ease),
+      color 0.2s var(--ease);
+    white-space: nowrap;
+  }
+  .chip:active {
+    transform: scale(0.95);
+  }
+  .chip[data-active="true"] {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: transparent;
+  }
+  .chip:disabled {
+    opacity: 0.5;
+  }
+
+  /* Liquid glass — the premium translucent surface used for the answer sheet.
+     Layered: frosted backdrop + edge highlight + a glossy diagonal sheen. */
+  .liquid-sheet {
+    position: relative;
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.58),
+      rgba(255, 255, 255, 0.34)
+    );
+    backdrop-filter: blur(32px) saturate(190%) brightness(1.08);
+    -webkit-backdrop-filter: blur(32px) saturate(190%) brightness(1.08);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-bottom: none;
+    box-shadow:
+      0 -10px 44px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 0 40px rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+  /* Glossy reflection sweeping across the top-left, like light on wet glass. */
+  .liquid-sheet::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.08) 34%,
+      rgba(255, 255, 255, 0) 60%
+    );
+    pointer-events: none;
+  }
+  /* Keep all content above the sheen layer. */
+  .liquid-sheet > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* In-sheet lens switcher — solid pills so they read on the glass sheet. */
+  .seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 550;
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid transparent;
+    white-space: nowrap;
+    transition:
+      transform 0.15s var(--ease),
+      background 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+  .seg:active {
+    transform: scale(0.95);
+  }
+  .seg[data-active="true"] {
+    background: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .seg:disabled {
+    opacity: 0.5;
+  }
+
+  /* Soft scrims that keep glass UI legible over any scene. */
+  .scrim-top {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.28),
+      rgba(0, 0, 0, 0)
+    );
+  }
+  .scrim-bottom {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.32), rgba(0, 0, 0, 0));
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Voice orb — the animated centerpiece of the voice-first view.
+--------------------------------------------------------------------------- */
+.orb-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.orb-core {
+  position: absolute;
+  width: 64%;
+  height: 64%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 28%,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.75) 14%,
+    var(--accent) 56%,
+    #0a5bd0 100%
+  );
+  box-shadow:
+    0 10px 34px rgba(10, 132, 255, 0.45),
+    inset 0 -6px 16px rgba(0, 0, 0, 0.18),
+    inset 0 6px 14px rgba(255, 255, 255, 0.55);
+}
+.orb-glow {
+  position: absolute;
+  width: 92%;
+  height: 92%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--accent) 0%,
+    rgba(10, 132, 255, 0) 66%
+  );
+  filter: blur(10px);
+  opacity: 0.4;
+}
+.orb-ring {
+  position: absolute;
+  width: 64%;
+  height: 64%;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  opacity: 0;
+}
+
+.orb-wrap[data-state="idle"] .orb-core {
+  animation: orb-breathe 4s ease-in-out infinite;
+}
+.orb-wrap[data-state="thinking"] .orb-core {
+  animation: orb-breathe 1.5s ease-in-out infinite;
+}
+.orb-wrap[data-state="thinking"] .orb-glow {
+  animation: orb-glow-pulse 1.5s ease-in-out infinite;
+}
+.orb-wrap[data-state="speaking"] .orb-core {
+  animation: orb-speak 1.05s ease-in-out infinite;
+}
+.orb-wrap[data-state="speaking"] .orb-glow {
+  animation: orb-glow-pulse 1.05s ease-in-out infinite;
+}
+.orb-wrap[data-state="listening"] .orb-core {
+  animation: orb-breathe 1.2s ease-in-out infinite;
+}
+.orb-wrap[data-state="listening"] .orb-ring {
+  animation: orb-ripple 1.4s ease-out infinite;
+}
+
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes orb-speak {
+  0%, 100% { transform: scale(0.95); }
+  50% { transform: scale(1.13); }
+}
+@keyframes orb-glow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.8; }
+}
+@keyframes orb-ripple {
+  0% { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.55); }
+}
+
+/* ---------------------------------------------------------------------------
+   Aim step — camera-focus reticle + shutter button.
+--------------------------------------------------------------------------- */
+.reticle {
+  position: relative;
+  width: 208px;
+  height: 208px;
+}
+.reticle span {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 2.5px solid rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+.reticle span:nth-child(1) {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 9px;
+}
+.reticle span:nth-child(2) {
+  top: 0;
+  right: 0;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 9px;
+}
+.reticle span:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 9px;
+}
+.reticle span:nth-child(4) {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 9px;
+}
+.reticle[data-active="true"] {
+  animation: reticle-focus 1.1s ease-in-out infinite;
+}
+@keyframes reticle-focus {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(0.93); opacity: 1; }
+}
+
+.shutter {
+  display: grid;
+  place-items: center;
+  height: 72px;
+  width: 72px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.95);
+  background: transparent;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  -webkit-tap-highlight-color: transparent;
+}
+.shutter span {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s var(--ease);
+}
+.shutter:active span {
+  transform: scale(0.86);
+}
+.shutter:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---------------------------------------------------------------------------
+   Voice input — live waveform under the orb + a mic button.
+--------------------------------------------------------------------------- */
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+.wave .bar {
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: #fff;
+  transform: scaleY(0.3);
+  transform-origin: center;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.4));
+}
+.wave[data-active="true"] .bar {
+  animation: wave 0.7s ease-in-out infinite;
+}
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1.4); }
+}
+.mic-btn {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.mic-btn[data-recording="true"] {
+  background: #e0483d;
+}
+.mic-btn:disabled {
+  opacity: 0.4;
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.animate-sheet-in {
+  animation: sheet-in 0.42s var(--ease);
+}
