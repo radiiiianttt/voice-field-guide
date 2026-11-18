@@ -6,7 +6,7 @@ Voice Field Guide is a mobile-first, multimodal AI companion for understanding t
 
 **[Read the case study](https://portfolio-v2-gray-six.vercel.app/work/voice-field-guide)**
 
-*Independent project · Product design & development · Field-tested in Switzerland and France (2026)*
+*Independent project · Product design & development · 2026*
 
 <p align="center">
   <img src="https://portfolio-v2-gray-six.vercel.app/images/field-guide-1.png" width="300" alt="Voice Field Guide identifying a sculpture in Paris, showing its place information, voice state, and three ways to explore." />
@@ -72,24 +72,13 @@ The frontend coordinates the experience through `useCompanion`. Next.js API rout
 
 **Keep persistence lightweight.** The prototype has no account system or application database. Explored places are stored in the current browser; clearing its local data removes that saved history.
 
-## Field testing
-
-I tested the prototype in the **Swiss Alps and Paris**, with mountain landscapes, built structures, and sculpture. Similar-looking natural features were particularly challenging to identify, reinforcing the need for geographic grounding and explicit uncertainty.
-
-<p align="center">
-  <img src="https://portfolio-v2-gray-six.vercel.app/images/field-guide-testing-alps.png" width="320" alt="Voice Field Guide being tested on a phone in the Swiss Alps." />
-  <img src="https://portfolio-v2-gray-six.vercel.app/images/field-guide-testing-paris.png" width="320" alt="Voice Field Guide being used to explore a sculpture in Paris." />
-</p>
-
-*Field-test documentation from Switzerland and France. These are observational tests, not a formal accuracy or usability study.*
-
 ## Current scope and limitations
 
 The core camera-to-identification-to-spoken-answer flow is implemented. The application is a working research prototype, not a production travel guide.
 
 - **Recognition is probabilistic.** Prompt instructions encourage uncertainty but do not provide verified confidence estimates or guarantee factual accuracy.
 - **Response time varies.** The interaction depends on multiple model requests, geographic services, and audio synthesis.
-- **Validation is limited.** Field tests informed the design, but the repository does not contain a formal accuracy benchmark, automated test suite, or broad usability study.
+- **Validation is limited.** The repository does not contain a formal accuracy benchmark, automated test suite, or broad usability study.
 - **Privacy is prototype-level.** Camera images, audio questions, and optional location information pass through server routes and relevant external providers to fulfill requests. Saved place history (including coordinates if available) stays in the browser's local storage.
 
 Next steps are improving landmark identification, reducing conversational latency, testing with more travelers, and expanding accessibility and privacy controls.
