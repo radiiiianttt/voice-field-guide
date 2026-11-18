@@ -26,13 +26,13 @@ Discovering a place often means interrupting the experience to search for it. I 
 
 ## Try the experience
 
-1. **Point and capture.** Aim at a natural feature, building, sculpture, or other structure. The app requests camera access and can optionally use device location.
-2. **Identify.** A vision model interprets the captured frame, with geographic context when available. The interface shows a place name or a cautious description when the exact identity is uncertain.
-3. **Choose a perspective.** Explore the place through **Why here?** (history and geography), **What people miss** (overlooked details), or **How it works** (engineering, materials, or natural processes).
-4. **Continue by voice.** Ask a spoken follow-up. The app transcribes the question, generates a contextual answer, and reads it aloud.
-5. **Revisit.** Previously explored places and their text answers are saved in browser-local history.
+1. **Capture.** Point the camera at a place, optionally using device location.
+2. **Identify.** Vision and geographic clues produce a name or cautious description.
+3. **Explore.** Choose **Why here?**, **What people miss**, or **How it works**.
+4. **Ask by voice.** Speak a follow-up and hear a contextual answer.
+5. **Revisit.** Find explored places and answers in browser-local history.
 
-The same three perspectives work across natural environments and built structures. A single captured image remains the reference for the conversation; the app retains its identified place and previous answers as the interaction continues.
+The captured image and conversation context carry through follow-up questions.
 
 ## How it works
 
@@ -68,13 +68,13 @@ The frontend coordinates the experience through `useCompanion`. Next.js API rout
 
 ### Design and engineering decisions
 
-**Treat location as evidence, not certainty.** GPS can help distinguish similar-looking landscapes. The prompts instruct the model to name a specific place only when visual and geographic evidence plausibly agree. This is a design safeguard, not a measured accuracy guarantee.
+**Ground without overclaiming.** GPS provides clues, but the model is prompted to name a place only when the image and location plausibly agree.
 
-**Keep the conversation anchored.** The captured image, identified place, and previous answers are reused for follow-ups. The interaction is designed to avoid repeatedly introducing the same subject.
+**Keep context stable.** Follow-ups reuse the image, place identity, and answer history instead of restarting the conversation.
 
-**Use one exploration model across domains.** Rather than separate flows for architecture, geology, and infrastructure, the three perspectives provide a consistent interaction across subjects.
+**Use one model across subjects.** Three perspectives work for nature, architecture, and infrastructure.
 
-**Keep persistence lightweight.** The prototype has no account system or application database. Explored places are stored in the current browser; clearing its local data removes that saved history.
+**Save history locally.** No accounts or database; explored places and text answers stay in browser storage.
 
 ## Current scope and limitations
 
