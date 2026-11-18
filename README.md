@@ -9,7 +9,11 @@ Voice Field Guide is a mobile-first, multimodal AI companion for understanding t
 *Independent project · Product design & development · 2026*
 
 <p align="center">
-  <img src="https://portfolio-v2-gray-six.vercel.app/images/field-guide-1.png" width="300" alt="Voice Field Guide identifying a sculpture in Paris, showing its place information, voice state, and three ways to explore." />
+  <img
+    src="https://github.com/user-attachments/assets/5e4182f2-8e9d-4747-ab8b-2e101592db38"
+    width="300"
+    alt="Voice Field Guide app interface"
+  />
 </p>
 
 *An identified place stays in context while the user changes perspectives or asks another question.*
